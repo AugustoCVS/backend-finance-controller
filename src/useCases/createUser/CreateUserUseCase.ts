@@ -11,6 +11,13 @@ interface IUserRequest {
 
 class CreateUserUseCase {
   async execute({ confirm_password, email, name, password }: IUserRequest) {
+
+    const allFieldsAreFilled = name && email && password && confirm_password;
+
+    if (!allFieldsAreFilled) {
+      throw new Error("Todos os campos são obrigatórios");
+    }
+
     if (password !== confirm_password) {
       throw new Error("Senhas não conferem");
     }
