@@ -1,21 +1,13 @@
+import { sign } from 'jsonwebtoken';
 import { compare } from "bcryptjs";
 
-import { client } from "../../prisma/client";
-import { sign } from "jsonwebtoken";
+import { ILogin, IUserTokenPayload } from "../../../../domain/interfaces/user";
+import { client } from "../../../../infra/prisma/client";
+;
 
-interface IRequest {
-  email: string;
-  password: string;
-}
-
-interface ITokenPayload {
-  sub: string;
-  name: string;
-  email: string;
-}
 
 class AuthenticateUserUseCase {
-  async execute({ email, password }: IRequest) {
+  async execute({ email, password }: ILogin) {
 
     const allFieldsAreFilled = email && password;
 
@@ -38,7 +30,7 @@ class AuthenticateUserUseCase {
     if (!passwordMatch) {
       throw new Error("Credenciais inválidas");
     }
-    const tokenPayload: ITokenPayload = {
+    const tokenPayload: IUserTokenPayload = {
       sub: userAlreadyExists.id,
       name: userAlreadyExists.name,
       email: userAlreadyExists.email,
