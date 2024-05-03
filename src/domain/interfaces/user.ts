@@ -9,9 +9,8 @@ export interface ILogin {
   email: string;
   password: string;
 }
-
-export interface IUserTokenPayload {
-  sub: string;
-  name: string;
-  email: string;
+export interface IRefreshToken {
+  id: string;
+  expiresIn: number;
+  userId: string;
 }
