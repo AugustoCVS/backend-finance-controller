@@ -1,89 +1,51 @@
 import { hash } from "bcryptjs";
-import { client } from "../../../infra/prisma/client";
+
 import { IUser } from "../../../domain/interfaces/user";
+import { PrismaClient } from "@prisma/client";
 
-const allFieldsAreFilled = ({
-  confirm_password,
-  email,
-  name,
-  password,
-}: IUser): void => {
-  const allFieldsAreFilled = name && email && password && confirm_password;
-
-  if (!allFieldsAreFilled) {
-    throw new Error("Todos os campos são obrigatórios");
-  }
-};
-
-const verifyPassword = ({
-  password,
-  confirm_password,
-}: {
-  password: string;
-  confirm_password: string;
-}): void => {
-  if (password !== confirm_password) {
-    throw new Error("Senhas não conferem");
-  }
-};
-
-const verifyIfUserAlreadyExists = async ({
-  email,
-}: {
-  email: string;
-}): Promise<void> => {
-  const userAlreadyExists = await client.user.findFirst({
-    where: {
-      email,
-    },
-  });
-
-  if (userAlreadyExists) {
-    throw new Error("Usuário ja existe");
-  }
-};
-
-const saveUserOnDatabase = async ({ confirm_password, email, name, password }: IUser): Promise<IUser> => {
-  const passwordHash = await hash(password, 8);
-  const confirm_passwordHash = await hash(confirm_password, 8);
-
-  const user = await client.user.create({
-    data: {
-      name,
-      email,
-      password: passwordHash,
-      confirm_password: confirm_passwordHash,
-    },
-  });
-
-  return user;
-}
-
+const client = new PrismaClient();
 class CreateUserService {
-  async execute({ confirm_password, email, name, password }: IUser) {
-    allFieldsAreFilled({
-      confirm_password,
-      email,
-      name,
-      password,
+  private async validateUserInput({
+    confirm_password,
+    email,
+    name,
+    password,
+  }: IUser): Promise<void> {
+    if (!email || !name || !password || !confirm_password) {
+      throw new Error("Todos os campos são obrigatórios");
+    }
+
+    if (password !== confirm_password) {
+      throw new Error("Senhas não conferem");
+    }
+
+    const userAlreadyExists = await client.user.findUnique({
+      where: { email },
     });
 
-    verifyPassword({
-      password,
-      confirm_password,
-    });
+    if (userAlreadyExists) {
+      throw new Error("Usuário já existe");
+    }
+  }
 
-    verifyIfUserAlreadyExists({
-      email,
-    });
+  async execute(userData: IUser): Promise<IUser> {
+    try {
+      await this.validateUserInput(userData);
 
-    saveUserOnDatabase({
-      confirm_password,
-      email,
-      name,
-      password
-    })
+      const passwordHash = await hash(userData.password, 8);
+      const createdUser = await client.user.create({
+        data: {
+          name: userData.name,
+          email: userData.email,
+          password: passwordHash,
+          confirm_password: passwordHash,
+        },
+      });
 
+      return createdUser;
+    } catch (error) {
+      throw new Error("Falha ao criar usuário: " + error.message);
+    }
   }
 }
 
