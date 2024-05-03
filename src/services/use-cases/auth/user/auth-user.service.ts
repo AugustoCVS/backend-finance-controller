@@ -1,8 +1,9 @@
-import { sign } from "jsonwebtoken";
 import { compare } from "bcryptjs";
 
-import { ILogin, IUserTokenPayload } from "../../../../domain/interfaces/user";
+import { ILogin, IRefreshToken } from "../../../../domain/interfaces/user";
 import { client } from "../../../../infra/prisma/client";
+import { GenerateTokenProvider } from "../../../../provider/token/generate-token.provider";
+import { GenerateRefreshTokenProvider } from "../../../../provider/token/generate-refresh-token.provider";
 
 class AuthenticateUserUseCase {
   private async validateUserInput({ email, password }: ILogin): Promise<void> {
@@ -11,7 +12,7 @@ class AuthenticateUserUseCase {
     }
   }
 
-  async execute({ email, password }: ILogin): Promise<{ token: string }> {
+  async execute({ email, password }: ILogin): Promise<{ token: string; refreshToken: IRefreshToken }> {
     try {
       await this.validateUserInput({ email, password });
 
@@ -27,18 +28,19 @@ class AuthenticateUserUseCase {
         throw new Error("Credenciais inválidas");
       }
 
-      const tokenPayload: IUserTokenPayload = {
-        sub: user.id,
-        name: user.name,
-        email: user.email,
-      };
+      const generateToken = new GenerateTokenProvider();
+      const token = await generateToken.execute(user.id);
 
-      //TODO: ALTERAR TEMPO DE EXPIRAÇÃO DO TOKEN
-      const token = sign(tokenPayload, process.env.JWT_SECRET, {
-        expiresIn: "20s",
+      await client.refreshToken.deleteMany({
+        where: {
+          userId: user.id,
+        },
       });
 
-      return { token };
+      const generateRefreshToken = new GenerateRefreshTokenProvider();
+      const refreshToken = await generateRefreshToken.execute(user.id);
+
+      return { token, refreshToken };
     } catch (error) {
       throw new Error("Falha ao autenticar usuário: " + error.message);
     }
