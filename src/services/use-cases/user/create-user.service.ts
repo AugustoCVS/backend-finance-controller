@@ -1,9 +1,7 @@
 import { hash } from "bcryptjs";
 
 import { IUser } from "../../../domain/interfaces/user";
-import { PrismaClient } from "@prisma/client";
-
-const client = new PrismaClient();
+import { client } from "../../../infra/prisma/client";
 class CreateUserService {
   private async validateUserInput({
     confirm_password,
