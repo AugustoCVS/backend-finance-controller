@@ -3,6 +3,7 @@ import { Router } from "express";
 import { CreateUserController } from "../../controllers/user/user.controller";
 import { AuthenticateUserController } from "../../controllers/auth/auth.controller";
 import { RefreshTokenUserController } from "../../controllers/auth/refresh-token.controller";
+import { ensureAuthenticated } from "../../../middlewares/ensure-authenticated";
 
 const userRoutes = Router();
 
@@ -12,6 +13,6 @@ const refreshTokenController = new RefreshTokenUserController();
 
 userRoutes.post("/register", createUserController.createUser)
 userRoutes.post("/login", authenticateUserController.login)
-userRoutes.post("/refreshToken", refreshTokenController.handle)
+userRoutes.post("/refreshToken", ensureAuthenticated, refreshTokenController.handle)
 
 export { userRoutes };	
