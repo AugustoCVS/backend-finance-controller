@@ -13,6 +13,9 @@ const refreshTokenController = new RefreshTokenUserController();
 
 userRoutes.post("/register", createUserController.createUser)
 userRoutes.post("/login", authenticateUserController.login)
-userRoutes.post("/refreshToken", ensureAuthenticated, refreshTokenController.handle)
+userRoutes.post("/refreshToken", refreshTokenController.handle)
+userRoutes.get("/profile", ensureAuthenticated, (req, res) => {
+  return res.json({ message: "Hello World" });
+})
 
 export { userRoutes };	
