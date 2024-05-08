@@ -18,6 +18,7 @@ userRoutes.post("/refreshToken", refreshTokenController.handle)
 userRoutes.post("/register", userController.createUser)
 userRoutes.get("/:id", ensureAuthenticated, userController.getUserById)
 userRoutes.put("/:id", ensureAuthenticated, userController.updateUser)
+userRoutes.put("/delete/:id", ensureAuthenticated, userController.deleteUser)
 
 userRoutes.get("/profile", ensureAuthenticated, (req, res) => {
   return res.json({ message: "Hello World" });
