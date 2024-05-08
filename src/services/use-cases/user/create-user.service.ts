@@ -2,6 +2,7 @@ import { hash } from "bcryptjs";
 
 import { IUser } from "../../../domain/interfaces/user";
 import { client } from "../../../infra/prisma/client";
+import { emailRegex } from "../../../utils/regexs";
 class CreateUserService {
   private async validateUserInput({
     confirm_password,
@@ -11,6 +12,10 @@ class CreateUserService {
   }: IUser): Promise<void> {
     if (!email || !name || !password || !confirm_password) {
       throw new Error("Todos os campos são obrigatórios");
+    }
+    
+    if (!emailRegex.test(email)) {
+      throw new Error('Email inválido');
     }
 
     if (password !== confirm_password) {
@@ -22,7 +27,7 @@ class CreateUserService {
     });
 
     if (userAlreadyExists) {
-      throw new Error("Usuário já existe");
+      throw new Error("Email indisponível");
     }
   }
 
