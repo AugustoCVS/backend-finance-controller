@@ -13,6 +13,17 @@ export interface ITransaction {
   updatedAt: Date;
 }
 
+export interface ITransactionMetadata {
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface ITransactionResponse {
+  transactions: ITransaction[];
+  metadata: ITransactionMetadata;
+}
+
 export interface ICreateTransactionDTO {
   description: string;
   value: number;
@@ -29,6 +40,7 @@ export interface IUpdateTransactionDTO {
   date?: Date;
   category?: TransactionCategory;
   type?: TransactionType;
+  accountId?: string;
 }
 
 export interface IGetTransactionsInput {
