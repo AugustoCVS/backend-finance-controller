@@ -13,6 +13,11 @@ export interface IUserResponse {
   updatedAt: Date;
 }
 
+export interface IUpdateUser {
+  name?: string;
+  email?: string;
+}
+
 export interface ILogin {
   email: string;
   password: string;
