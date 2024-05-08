@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { CreateUserService } from "../../../services/use-cases/user/create-user.service";
-
-
-class CreateUserController {
+import { GetUserService } from "../../../services/use-cases/user/get-user.service";
+class UserController {
   async createUser(request: Request, response: Response) {
     const { name, email, password, confirm_password } = request.body;
 
@@ -17,6 +16,18 @@ class CreateUserController {
 
     return response.json(user);
   }
+
+  async getUser(request: Request, response: Response) {
+    const { id } = request.params;
+
+    const getUserUseCase = new GetUserService();
+
+    const user = await getUserUseCase.execute({
+      userId: id,
+    });
+
+    return response.json(user);
+  }
 }
 
-export { CreateUserController };
+export { UserController };
