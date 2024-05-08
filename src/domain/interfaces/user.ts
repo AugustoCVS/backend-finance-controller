@@ -5,6 +5,14 @@ export interface IUser {
   confirm_password: string;
 }
 
+export interface IUserResponse {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ILogin {
   email: string;
   password: string;
