@@ -11,10 +11,13 @@ const userController = new UserController();
 const authenticateUserController = new AuthenticateUserController();
 const refreshTokenController = new RefreshTokenUserController();
 
-userRoutes.post("/register", userController.createUser)
+
 userRoutes.post("/login", authenticateUserController.login)
 userRoutes.post("/refreshToken", refreshTokenController.handle)
-userRoutes.get("/:id", ensureAuthenticated, userController.getUser)
+
+userRoutes.post("/register", userController.createUser)
+userRoutes.get("/:id", ensureAuthenticated, userController.getUserById)
+userRoutes.put("/:id", ensureAuthenticated, userController.updateUser)
 
 userRoutes.get("/profile", ensureAuthenticated, (req, res) => {
   return res.json({ message: "Hello World" });
