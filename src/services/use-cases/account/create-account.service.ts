@@ -1,5 +1,5 @@
 import { AccountType, Bank } from "@prisma/client";
-import { ICreateAccountDTO } from "../../../domain/interfaces/accounts";
+import { IAccount, ICreateAccountDTO } from "../../../domain/interfaces/accounts";
 import { client } from "../../../infra/prisma/client";
 
 class CreateAccountService {
@@ -8,7 +8,7 @@ class CreateAccountService {
     bank,
     description,
     userId,
-  }: ICreateAccountDTO) {
+  }: ICreateAccountDTO): Promise<void> {
     if (!accountType || !bank || !description || !userId) {
       throw new Error("Todos os campos são obrigatórios");
     }
@@ -22,7 +22,7 @@ class CreateAccountService {
     }
   }
 
-  async execute({ accountData }: { accountData: ICreateAccountDTO }) {
+  async execute({ accountData }: { accountData: ICreateAccountDTO }): Promise<IAccount> {
     try {
       await this.validateAccountInput(accountData);
 
