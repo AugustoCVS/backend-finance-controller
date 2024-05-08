@@ -13,8 +13,6 @@ export interface IAccount {
 }
 
 export interface ICreateAccountDTO {
-  name: string;
-  balance: number;
   bank: Bank;
   accountType: AccountType;
   description: string;
