@@ -15,6 +15,7 @@ model User {
   confirm_password String
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
+  active           Boolean        @default(true)
   refresh_token    RefreshToken[]
 
   @@map("users")
