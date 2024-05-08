@@ -20,7 +20,6 @@ export interface ICreateAccountDTO {
 }
 
 export interface IUpdateAccountDTO {
-  balance?: number;
   bank?: Bank;
   accountType?: AccountType;
   description?: string;
