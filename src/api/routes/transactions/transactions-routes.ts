@@ -9,12 +9,14 @@ const transactionsController = new TransactionsController();
 
 transactionsRoutes.post("/create", ensureAuthenticated, transactionsController.createTransaction);
 transactionsRoutes.get(
-  "/list/:userId/:accountId?/:category?",
+  "/list/:userId",
   ensureAuthenticated,
   (request: Request, _response: Response, next: Function) => {
-    const { limit, page } = request.query;
+    const { limit, page, accountId, category } = request.query;
     request.query.limit = String(limit) || "10";
     request.query.page = String(page) || "1";
+    request.query.accountId = accountId;
+    request.query.category = category;
     next();
   },
   transactionsController.getTransactions

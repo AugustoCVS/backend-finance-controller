@@ -29,14 +29,14 @@ class TransactionsController {
   }
 
   async getTransactions(request: Request, response: Response) {
-    const { userId, accountId, category } = request.params;
-    const { limit = 10, page = 1 } = request.query;
+    const { userId } = request.params;
+    const { limit = 10, page = 1, accountId, category } = request.query;
 
     const getTransactionsUseCase = new GetTransactionsService();
 
     const transactions = await getTransactionsUseCase.execute({
       userId: userId,
-      accountId: accountId ? accountId : undefined,
+      accountId: accountId ? accountId.toString() : undefined,
       category: category ? (category as TransactionCategory) : undefined,
       limit: Number(limit),
       page: Number(page),
