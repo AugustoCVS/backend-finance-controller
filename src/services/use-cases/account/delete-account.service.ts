@@ -11,6 +11,9 @@ class DeleteAccountService {
         throw new Error("Conta não encontrada");
       }
 
+      await client.transactions.deleteMany({
+        where: { accountId: id },
+      });
       await client.account.delete({
         where: { id },
       });
