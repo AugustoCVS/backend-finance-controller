@@ -33,7 +33,7 @@ class CreateAccountService {
         data: {
           name: accountName,
           balance: balance,
-          bank: accountData.bank as Bank,
+          bank: accountData.bank,
           accountType: accountData.accountType,
           description: accountData.description,
           userId: accountData.userId,
