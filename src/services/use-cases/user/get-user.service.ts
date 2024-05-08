@@ -12,7 +12,7 @@ class GetUserService {
         throw new Error("Usuário não encontrado");
       }
 
-      const userResponse = {
+      const userResponse: IUserResponse = {
         id: user.id,
         name: user.name,
         email: user.email,
