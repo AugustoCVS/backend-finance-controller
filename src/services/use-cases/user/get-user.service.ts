@@ -8,7 +8,7 @@ class GetUserService {
         where: { id: userId },
       });
 
-      if (!user) {
+      if (!user || user.active === false) {
         throw new Error("Usuário não encontrado");
       }
 
