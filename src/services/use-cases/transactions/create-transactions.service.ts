@@ -45,6 +45,8 @@ class CreateTransactionsService {
         }
       })
 
+      const accountName = account.name;
+
       const transaction = await client.transactions.create({
         data: {
           description: transactionData.description,
@@ -53,6 +55,7 @@ class CreateTransactionsService {
           type: transactionData.type,
           category: transactionData.category,
           accountId: transactionData.accountId,
+          accountName: accountName,
           userId: transactionData.userId,
         }
       })

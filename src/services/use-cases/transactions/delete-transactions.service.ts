@@ -7,6 +7,19 @@ class DeleteTransactionsService {
         where: { id },
       });
 
+      const account = await client.account.findUnique({
+        where: { id: transaction.accountId },
+      });
+
+      if (!account) {
+        throw new Error("Conta não encontrada");
+      }
+
+      await client.account.update({
+        where: { id: transaction.accountId },
+        data: { balance: account.balance - transaction.value },
+      });
+
       if (!transaction) {
         throw new Error("Transação não encontrada");
       }

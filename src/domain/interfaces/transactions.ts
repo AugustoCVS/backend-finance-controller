@@ -31,6 +31,7 @@ export interface ICreateTransactionDTO {
   category: TransactionCategory;
   type: TransactionType;
   accountId: string;
+  accountName?: string;
   userId: string;
 }
 
