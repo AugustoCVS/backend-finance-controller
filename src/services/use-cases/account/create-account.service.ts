@@ -1,6 +1,7 @@
 import { AccountType, Bank } from "@prisma/client";
 import { IAccount, ICreateAccountDTO } from "../../../domain/interfaces/accounts";
 import { client } from "../../../infra/prisma/client";
+import { accountBankName, accountTypeName } from "../../../utils/account";
 
 class CreateAccountService {
   private async validateAccountInput({
@@ -26,7 +27,8 @@ class CreateAccountService {
     try {
       await this.validateAccountInput(accountData);
 
-      const accountName = `${accountData.bank} - ${accountData.accountType}`;
+      const accountName = `${accountBankName[accountData.bank]} - ${accountTypeName[accountData.accountType]}`;
+
       const balance = 0;
 
       const createdAccount = await client.account.create({

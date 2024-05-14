@@ -1,6 +1,7 @@
 import { AccountType, Bank } from "@prisma/client";
 import { IAccount, IUpdateAccountDTO } from "../../../domain/interfaces/accounts";
 import { client } from "../../../infra/prisma/client";
+import { accountBankName, accountTypeName } from "../../../utils/account";
 
 class UpdateAccountService {
   private async validateAccountInput({
@@ -30,7 +31,7 @@ class UpdateAccountService {
     try {
       await this.validateAccountInput(accountData);
 
-      const accountName = `${accountData.bank} - ${accountData.accountType}`;
+      const accountName = `${accountBankName[accountData.bank]} - ${accountTypeName[accountData.accountType]}`;
 
       const updatedAccount = await client.account.update({
         where: { id },
@@ -38,6 +39,11 @@ class UpdateAccountService {
           name: accountName,
           ...accountData,
         },
+      });
+
+      await client.transactions.updateMany({
+        where: { accountId: id },
+        data: { accountName: accountName },
       });
 
       return updatedAccount;
