@@ -15,9 +15,11 @@ class DeleteTransactionsService {
         throw new Error("Conta não encontrada");
       }
 
+      const newBalance = account.balance - transaction.value;
+
       await client.account.update({
-        where: { id: transaction.accountId },
-        data: { balance: account.balance - transaction.value },
+        where: { id: account.id },
+        data: { balance: newBalance },
       });
 
       if (!transaction) {
